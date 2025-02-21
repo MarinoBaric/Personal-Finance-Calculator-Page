@@ -41,11 +41,11 @@
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/financia.git
+   git clone https://github.com/MarinoBaric/Personal-Finance-Calculator-Page.git
    ```
 2. Navigate to the project folder:
    ```sh
-   cd financia
+   cd Personal-Finance-Calculator-Page
    ```
 3. Open `index.html` in your browser or deploy on a static hosting platform.
 
