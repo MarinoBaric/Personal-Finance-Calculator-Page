@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financia - Advanced Personal Finance Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2d3436;
+            --secondary: #636e72;
+            --accent: #0984e3;
+            --positive: #00b894;
+            --negative: #d63031;
+            --background: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .summary {
+            font-size: 1.2rem;
+            padding: 1rem;
+            background: rgba(0, 184, 148, 0.1);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .transaction-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(223, 228, 234, 0.3);
+            border-radius: 6px;
+        }
+
+        .positive { color: var(--positive); }
+        .negative { color: var(--negative); }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Net Worth Calculator -->
+        <div class="card glassmorphism">
+            <h2>Net Worth Calculator</h2>
+            <div class="input-group">
+                <input type="number" id="assets" placeholder="Total Assets">
+                <input type="number" id="liabilities" placeholder="Total Liabilities" class="mt-1">
+            </div>
+            <button onclick="calculateNetWorth()">Calculate</button>
+            <div id="netWorthResult" class="summary"></div>
+        </div>
+
+        <!-- Budget Planner -->
+        <div class="card glassmorphism">
+            <h2>Budget Planner</h2>
+            <div class="input-group">
+                <input type="number" id="income" placeholder="Monthly Income">
+                <input type="number" id="expense" placeholder="Monthly Expenses" class="mt-1">
+            </div>
+            <button onclick="calculateBudget()">Analyze</button>
+            <div id="budgetResult" class="summary"></div>
+        </div>
+
+        <!-- Debt Payoff Calculator -->
+        <div class="card glassmorphism">
+            <h2>Debt Payoff Calculator</h2>
+            <div class="input-group">
+                <input type="number" id="debtAmount" placeholder="Total Debt">
+                <input type="number" id="interestRate" placeholder="Interest Rate (%)" class="mt-1">
+                <input type="number" id="monthlyPayment" placeholder="Monthly Payment" class="mt-1">
+            </div>
+            <button onclick="calculateDebtPayoff()">Calculate</button>
+            <div id="debtResult" class="summary"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Financial Overview</h2>
+            <div class="chart-container">
+                <canvas id="financeChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Local Storage Management
+        const storeData = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+        const getData = (key) => JSON.parse(localStorage.getItem(key)) || [];
+
+        // Financial Calculations
+        function calculateNetWorth() {
+            const assets = parseFloat(document.getElementById('assets').value);
+            const liabilities = parseFloat(document.getElementById('liabilities').value);
+            const netWorth = assets - liabilities;
+            
+            const result = document.getElementById('netWorthResult');
+            result.innerHTML = `
+                <strong>Net Worth:</strong> $${netWorth.toLocaleString()} <br>
+                <span class="${netWorth >= 0 ? 'positive' : 'negative'}">
+                    ${netWorth >= 0 ? 'Positive' : 'Negative'} Net Worth
+                </span>
+            `;
+            
+            updateChart();
+            storeData('netWorth', netWorth);
+        }
+
+        function calculateBudget() {
+            const income = parseFloat(document.getElementById('income').value);
+            const expenses = parseFloat(document.getElementById('expense').value);
+            const savings = income - expenses;
+            const savingsRate = ((savings / income) * 100).toFixed(1);
+
+            const result = document.getElementById('budgetResult');
+            result.innerHTML = `
+                <strong>Monthly Savings:</strong> $${savings.toLocaleString()} <br>
+                <strong>Savings Rate:</strong> ${savingsRate}% <br>
+                <span class="${savings >= 0 ? 'positive' : 'negative'}">
+                    ${savings >= 0 ? 'Within Budget' : 'Over Budget'}
+                </span>
+            `;
+
+            storeData('budget', { income, expenses, savings });
+            updateChart();
+        }
+
+        function calculateDebtPayoff() {
+            const debt = parseFloat(document.getElementById('debtAmount').value);
+            const rate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+            const payment = parseFloat(document.getElementById('monthlyPayment').value);
+
+            let balance = debt;
+            let months = 0;
+            while (balance > 0) {
+                balance = balance * (1 + rate) - payment;
+                months++;
+                if (months > 600) break; // Prevent infinite loop
+            }
+
+            const result = document.getElementById('debtResult');
+            result.innerHTML = months <= 600 
+                ? `<strong>Payoff Time:</strong> ${Math.floor(months/12)} yrs ${months%12} mos`
+                : "Repayment not feasible with current terms";
+            
+            storeData('debt', { debt, rate: rate*12*100, payment });
+            updateChart();
+        }
+
+        // Chart Implementation
+        let financeChart;
+        function initChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            financeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Assets', 'Liabilities', 'Income', 'Expenses'],
+                    datasets: [{
+                        data: [
+                            getData('netWorth') || 0,
+                            parseFloat(document.getElementById('liabilities').value) || 0,
+                            (getData('budget')?.income) || 0,
+                            (getData('budget')?.expenses) || 0
+                        ],
+                        backgroundColor: [
+                            '#00b894',
+                            '#d63031',
+                            '#0984e3',
+                            '#fdcb6e'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (financeChart) {
+                financeChart.data.datasets[0].data = [
+                    getData('netWorth') || 0,
+                    parseFloat(document.getElementById('liabilities').value) || 0,
+                    (getData('budget')?.income) || 0,
+                    (getData('budget')?.expenses) || 0
+                ];
+                financeChart.update();
+            }
+        }
+
+        // Initialization
+        window.onload = () => {
+            initChart();
+            // Load previous data
+            const netWorth = getData('netWorth');
+            if (netWorth) document.getElementById('netWorthResult').innerHTML = 
+                `<strong>Net Worth:</strong> $${netWorth.toLocaleString()}`;
+        };
+
+        // Advanced Feature: Currency Formatter
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+    </script>
+</body>
+</html>
