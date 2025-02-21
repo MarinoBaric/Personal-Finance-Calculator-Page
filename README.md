@@ -25,10 +25,6 @@
 - **⚡ Instant Data Saving** - Uses local storage for saving your financial progress.
 - **🌐 Fully Responsive** - Works on both desktop and mobile devices.
 
-## 📸 UI Preview
-
-![Financia Screenshot](https://via.placeholder.com/1200x600?text=Financia+Screenshot)
-
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML5, CSS3, JavaScript (ES6+)
@@ -52,10 +48,6 @@
    cd financia
    ```
 3. Open `index.html` in your browser or deploy on a static hosting platform.
-
-## 💻 Live Demo
-
-Check out the live demo: [Financia Live](https://yourusername.github.io/financia/)  
 
 ## 📜 License
 
