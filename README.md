@@ -1,9 +1,9 @@
 <h1 align="center">💰 Financia - Advanced Personal Finance Suite 💰</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/github/languages/top/yourusername/financia?style=for-the-badge" alt="Top Language">
-  <img src="https://img.shields.io/github/license/yourusername/financia?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/github/stars/yourusername/financia?style=for-the-badge" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/languages/top/MarinoBaric/financia?style=for-the-badge" alt="Top Language">
+  <img src="https://img.shields.io/github/license/MarinoBaric/financia?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/github/stars/MarinoBaric/financia?style=for-the-badge" alt="GitHub Stars">
 </p>
 
 ## 🌟 Introduction
